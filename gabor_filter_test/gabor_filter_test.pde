@@ -2,7 +2,7 @@ PImage img;
 Gabor a_gabor;
 
 void setup() {
-  size(960, 720, P2D);
+  
   img = loadImage("korla.jpg");
   img.loadPixels();
   ArrayList<ArrayList<Color>> pixies = new ArrayList<ArrayList<Color>>();
@@ -15,6 +15,9 @@ void setup() {
   }
   
   a_gabor = new Gabor(pixies, img.width, img.height);
+  
+  size(img.width, img.height, P2D);
+  //a_gabor.gabor_filter();
 }
 
 void draw() {
