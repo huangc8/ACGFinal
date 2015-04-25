@@ -33,24 +33,20 @@ class Gabor {
       }
       k_h = k_w;
     }
-    
-//    for (int i=0; i<h; i++) {
-//      for (int j=0; j<w; j++)
-//        println(pix.get(i).get(j));
-//    }
   }
   
+  // Clamps result image values to 0-255
   public void clamp() {
     for (int i=0; i<h; i++) {
       for (int j=0; j<w; j++) {
         float org = res.get(i).get(j);
         float clamped = (org-min)*255/(max-min);
         res.get(i).set(j, clamped);
-        println(clamped);
       }
     }
   }
   
+  // calculates the values to populate the gabor kernel(matrix)
   public void gabor_filter_calculation() {
     for (int r=0; r<k_h; r++) {
       FloatList tmp = new FloatList();
@@ -68,6 +64,7 @@ class Gabor {
     }
   }
   
+  // applies the kernel to each pixel on the image
   public void generation() {
     int k_center = (k_w-1)/2;
     for (int r=0; r<h; r++) {

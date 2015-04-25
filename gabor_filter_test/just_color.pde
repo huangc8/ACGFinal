@@ -1,3 +1,5 @@
+// Just helper class for color, since color in processing is an int,
+// which cannot be used in an arraylist
 class Color {
   public color rgb;
   

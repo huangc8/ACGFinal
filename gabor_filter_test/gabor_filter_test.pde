@@ -8,6 +8,7 @@ void setup() {
   out = loadImage("portrait_boy.jpg");
   img.loadPixels();
   out.loadPixels();
+  
   ArrayList<ArrayList<Color>> pixies = new ArrayList<ArrayList<Color>>();
   for (int i=0; i<img.height; i++) {
     ArrayList<Color> tmp = new ArrayList<Color>();
