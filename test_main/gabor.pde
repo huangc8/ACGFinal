@@ -1,7 +1,7 @@
 
 class Gabor {
   public ArrayList<ArrayList<Color>> pix;
-  public ArrayList<FloatList> res = new ArrayList<FloatList>();          // combined result
+  public ArrayList<ArrayList<Color>> res = new ArrayList<ArrayList<Color>>();          // combined result
   public ArrayList<FloatList> gabor_matrix = new ArrayList<FloatList>(); // gabor kernel
   public ArrayList<GaborCell> pouch = new ArrayList<GaborCell>();        // results from multiple orientations
   public int w;
@@ -11,8 +11,14 @@ class Gabor {
   public float psi;               // phase offset
   public float sigma;             // standard deviation of Gaussian envelope
   public float gamma;             // aspect ratio
-  public float min = 0.0;         // max and min values in the resulting image
-  public float max = 0.0;
+  public float minr = 0.0;         // max and min values in the resulting image
+  public float ming = 0.0;
+  public float minb = 0.0;
+  public float maxr = 0.0;
+  public float maxg = 0.0;
+  public float maxb = 0.0;
+  public float maxs = 0.0;
+  public float mins = 0.0;
   public int k_size;              // kernel size
   
   public Gabor(ArrayList<ArrayList<Color>> c, int wi, int he) {
@@ -20,10 +26,10 @@ class Gabor {
     w = wi;
     h = he;
     
-    lambda = 10.0;
+    lambda = 8.0;
     
     theta = radians(0);
-    psi = 0.5;
+    psi = 0;
     sigma = 0.56*lambda;
     gamma = 0.5;
     
@@ -34,16 +40,28 @@ class Gabor {
     else {
       k_size = ceil(2.5*sigma);
     }
+    println("kernel size: ", k_size);
   }
   
   // Clamps result image values to 0-255
-  private void clamp(ArrayList<FloatList> re) {
+  private void clamp(ArrayList<ArrayList<Color>> re) {
     if (re.size() < 1) {return;}
     for (int i=0; i<h; i++) {
       for (int j=0; j<w; j++) {
-        float org = re.get(i).get(j);
-        float clamped = map(org, min, max, 0, 255);
-        re.get(i).set(j, clamped);
+        float orgr = re.get(i).get(j).red;
+        float orgg = re.get(i).get(j).green;
+        float orgb = re.get(i).get(j).blue;
+        float orgs = re.get(i).get(j).sat;
+        orgr = map(orgr, minr, maxr, 0, 256);
+        orgg = map(orgg, ming, maxg, 0, 256);
+        orgb = map(orgb, minb, maxb, 0, 256);
+        if (orgs >= 0.0) {
+          orgs = map(orgs, mins, maxs, 0, 256);
+        }
+        
+        Color col = new Color(orgr, orgg, orgb);
+        col.sat = orgs;
+        re.get(i).set(j, col);
       }
     }
   }
@@ -98,31 +116,46 @@ class Gabor {
   
 //  applies the kernel to each pixel on the image, and store the result
   private void generation() {
-    min = 0.0;
-    max = 0.0;
-    ArrayList<FloatList> re = new ArrayList<FloatList>();
+    minr = 0.0;
+    maxr = 0.0;
+    ming = 0.0;
+    maxg = 0.0;
+    minb = 0.0;
+    maxb = 0.0;
+    ArrayList<ArrayList<Color>> re = new ArrayList<ArrayList<Color>>();
     
     int k_center = (k_size-1)/2;
     for (int r=0; r<h; r++) {
       int k_y = r - k_center;
-      FloatList tmp = new FloatList();
+      ArrayList<Color> tmp = new ArrayList<Color>();
       
       for (int c=0; c<w; c++) {
         int k_x = c - k_center;
-        float sum = 0.0;
+        float rs = 0.0;
+        float g = 0.0;
+        float b = 0.0;
         
         for (int y=0; y<k_size; y++) {
           for (int x=0; x<k_size; x++) {
             if (min(x+k_x, y+k_y) < 0 || x+k_x > w-1 || y+k_y > h-1) {continue;}
             float g_val = gabor_matrix.get(y).get(x);
-            float p = brightness(pix.get(y+k_y).get(x+k_x).rgb);
-            sum += g_val * p;
+//            float p = brightness(pix.get(y+k_y).get(x+k_x).rgb);
+            Color p = pix.get(y+k_y).get(x+k_x);
+            rs += g_val * p.red;
+            g += g_val * p.green;
+            b += g_val * p.blue;
           }
         }
         
-        if (sum > max) {max = sum;}
-        if (sum < min) {min = sum;}
-        tmp.append(sum);
+        if (rs > maxr) {maxr = rs;}
+        if (rs < minr) {minr = rs;}
+        
+        if (g > maxg) {maxg = g;}
+        if (g < ming) {ming = g;}
+        
+        if (b > maxb) {maxb = b;}
+        if (b < minb) {minb = b;}
+        tmp.add(new Color(rs, g, b));
       }
       re.add(tmp);
     }
@@ -134,20 +167,49 @@ class Gabor {
   
 //  combine results
   private void combine() {
-    res = new ArrayList<FloatList>();
+    minr = 0.0;
+    maxr = 0.0;
+    ming = 0.0;
+    maxg = 0.0;
+    minb = 0.0;
+    maxb = 0.0;
+    maxs = 0.0;
+    mins = 0.0;
+    res = new ArrayList<ArrayList<Color>>();
     for (int i=0; i<h; i++) {
-      FloatList tmp = new FloatList();
+      ArrayList<Color> tmp = new ArrayList<Color>();
       for (int j=0; j<w; j++) {
-        float acc = 0.0;
+        float r = 0.0;
+        float g = 0.0;
+        float b = 0.0;
+        float sa = 0.0;
         for (int n=0; n<pouch.size(); n++) {
-          acc += pouch.get(n).values.get(i).get(j);
+          Color p = pouch.get(n).values.get(i).get(j);
+          r += p.red;
+          g += p.green;
+          b += p.blue;
+          sa += p.sat;
         }
-        if (acc > max) {max = acc;}
-        if (acc < min) {min = acc;}
-        tmp.append(acc);
+        
+        if (r > maxr) {maxr = r;}
+        if (r < minr) {minr = r;}
+        
+        if (g > maxg) {maxg = g;}
+        if (g < ming) {ming = g;}
+        
+        if (b > maxb) {maxb = b;}
+        if (b < minb) {minb = b;}
+        
+        if (sa > maxs) {maxs = sa;}
+        if (sa < mins) {mins = sa;}
+        
+        Color col = new Color(r, g, b);
+        col.sat = sa;
+        tmp.add(col);
       }
       res.add(tmp);
     }
+    clamp(res);
   }
   
 //  calculate multiple results and combine them
@@ -156,11 +218,12 @@ class Gabor {
     
     for (int angle : angles) {
       theta = radians(angle);
+      psi = radians(0);
       gamma = 0.5;
       gabor_filter_calculation();
       generation();
       
-      gamma = 0.25;
+      psi = radians(90);
       gabor_filter_calculation();
       generation();
     }
