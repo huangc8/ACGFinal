@@ -20,7 +20,7 @@ class Gabor {
     w = wi;
     h = he;
     
-    lambda = 10.0;
+    lambda = 8.0;
     
     theta = radians(0);
     psi = 0.5;
@@ -42,7 +42,7 @@ class Gabor {
     for (int i=0; i<h; i++) {
       for (int j=0; j<w; j++) {
         float org = re.get(i).get(j);
-        float clamped = map(org, min, max, 0, 255);
+        float clamped = map(org, min, max, 0, 256);
         re.get(i).set(j, clamped);
       }
     }
@@ -134,6 +134,8 @@ class Gabor {
   
 //  combine results
   private void combine() {
+    max = 0.0;
+    min = 0.0;
     res = new ArrayList<FloatList>();
     for (int i=0; i<h; i++) {
       FloatList tmp = new FloatList();
@@ -148,6 +150,7 @@ class Gabor {
       }
       res.add(tmp);
     }
+    clamp(res);
   }
   
 //  calculate multiple results and combine them
@@ -156,11 +159,11 @@ class Gabor {
     
     for (int angle : angles) {
       theta = radians(angle);
-      gamma = 0.5;
+      psi = radians(0);
       gabor_filter_calculation();
       generation();
       
-      gamma = 0.25;
+      psi = radians(90);
       gabor_filter_calculation();
       generation();
     }
