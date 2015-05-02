@@ -20,7 +20,7 @@ class Gabor {
     w = wi;
     h = he;
     
-    lambda = 8.0;
+    lambda = 5.0;
     
     theta = radians(0);
     psi = 0.5;

@@ -19,9 +19,9 @@ class Graph {
     println("source size: ", source.size());
     
     add_nodes();
-//    add_edges();
   }
   
+//  create a node for every pixel value
   private void add_nodes() {
     println("starting to add nodes...");
     for (int i=0; i<h; i++) {
@@ -36,7 +36,8 @@ class Graph {
     }
     println("done adding nodes");
   }
-  
+
+// Calculate edge weights for each pair of adjacent nodes in their neighborhood
   private void add_edges() {  
     for (int i=0; i<h; i++) {
       int start_i = i - 2;
@@ -97,6 +98,7 @@ class Graph {
     }
   }
   
+//  Distribute weights
   public void distribute(int iterations) {
     if (iterations <= 0) {
       min = 10.0;

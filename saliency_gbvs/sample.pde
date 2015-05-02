@@ -1,4 +1,4 @@
-
+// Class that downsamples an image
 class Sample {
   public ArrayList<FloatList> pix;
   public ArrayList<FloatList> result = new ArrayList<FloatList>();
@@ -24,13 +24,14 @@ class Sample {
     }
   }
   
+  // for every sample_size x sample_size square in the pixel value grid,
+  // create a pixel with value being the original square's average
   public void down_sample() {
     int i=0;
     
     result = new ArrayList<FloatList>();
 
     while (i<h) { 
-//      println("i: ", i);
       int end_i = 0;
       if (i>=cut && i<h-cut) {
         end_i = i + sample_size;
@@ -46,11 +47,9 @@ class Sample {
         continue;
       }
       FloatList tmp = new FloatList();
-//      println("initialized row ", i);
       
       int j = 0;
       while (j<w) {
-//        println("j: ", j);
         int end_j = 0;
         if (j<cut || j>=w-cut-1) {
           j += 1;
