@@ -67,8 +67,9 @@ void setup() {
   s = createImage(samp.n_w, samp.n_h, RGB);
   load_pixel(s, activation.result);
   s.updatePixels();
-  s.save("sal_" + filename);
+  s.save("sal_org_" + filename);
   s.resize(img.width, img.height);
+  s.save("sal_" + filename);
 }
 
 void draw() {
