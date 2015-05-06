@@ -3,13 +3,23 @@ class BoundBox {
   public int minX =0;
   public int maxY =0;
   public int minY =0;
+  private int MX = 0;
+  private int MY = 0;
+  private int mX = 0;
+  private int mY = 0;
 
   // constructor
-  public BoundBox(int x, int y, int dim) {
+  public BoundBox(int x, int y, int dim, float dt) {
     maxX = x + dim;
     minX = x - dim;
     maxY = y + dim;
     minY = y - dim;
+    
+    int dtmp = int(dim * dt/100);
+    MX = x + dtmp;
+    mX = x - dtmp;
+    MY = y + dtmp;
+    mY = y - dtmp;
   }
 
   // check if inside box
@@ -24,10 +34,10 @@ class BoundBox {
   public void drawBox() {
     strokeWeight(1);
     stroke(255, 0, 0);
-    line(minX, maxY, maxX, maxY);
-    line(maxX, maxY, maxX, minY);
-    line(maxX, minY, minX, minY);
-    line(minX, minY, minX, maxY);
+    line(mX, MY, MX, MY);
+    line(MX, MY, MX, mY);
+    line(MX, mY, mX, mY);
+    line(mX, mY, mX, MY);
   }
 }
 

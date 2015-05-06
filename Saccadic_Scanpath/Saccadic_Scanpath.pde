@@ -1,6 +1,7 @@
 PImage img;
 Point [] points;
 Point [] marks;
+Point pp; // pervious point
 BoundBox [] boxes;
 int markIndex = 0;
 int boxIndex = 0;
@@ -33,7 +34,7 @@ void draw() {
   int p = -1;
   for (int i = 0; i < markIndex; i++) {
     drawCross(marks[i].x, marks[i].y);
-    if(p >= 0){
+    if (p >= 0) {
       drawLine(marks[i].x, marks[i].y, marks[p].x, marks[p].y);
     }
     p = i;
@@ -66,13 +67,15 @@ void keyPressed() {
 
         Point pt = points[index];
 
-        if(pt.x > img.width || pt.x < 0 
-        || pt.y > img.height || pt.y < 0){
+        // check if point inbound
+        if (pt.x > img.width || pt.x < 0 
+          || pt.y > img.height || pt.y < 0) {
           points[index].sv = 0;
           sortPoints();
           continue;
         }
 
+        // check if point been visited
         boolean found = false;
         for (int i = 0; i < boxIndex; i++) {
           if (boxes[i].inBox(pt.x, pt.y)) {
@@ -90,21 +93,36 @@ void keyPressed() {
         }
       }
 
-      markPoint(points[index]);
+      // calculate fixation duration
+      float durationTime = 200;
+      if (pp != null) {
+        Point pt = points[index];
+        float n = dist(pt.x, pt.y, pp.x, pp.y);
+        n += abs(pt.sv - pp.sv);
+        durationTime =+ random(n);
+        //System.out.println("DT: " + durationTime);
+      }else{
+        durationTime =+ random(100);
+        //System.out.println("DT: " + durationTime);
+      }
+      pp = points[index].clone();
+
+      // mark the point
+      markPoint(points[index], durationTime);
       sortPoints();
     }
   }
 }
 
 // mark a point on the image
-void markPoint(Point p) {
+void markPoint(Point p, float dt) {
   // add to mark
   marks[markIndex] = p;
   markIndex++; 
 
   // remove from top
   p.sv = 0;
-  boxes[boxIndex] = new BoundBox(p.x, p.y, dimension);
+  boxes[boxIndex] = new BoundBox(p.x, p.y, dimension, dt);
   boxIndex++;
 }
 
