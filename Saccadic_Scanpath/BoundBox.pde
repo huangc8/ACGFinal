@@ -7,6 +7,7 @@ class BoundBox {
   private int MY = 0;
   private int mX = 0;
   private int mY = 0;
+  private float dtime;
 
   // constructor
   public BoundBox(int x, int y, int dim, float dt) {
@@ -14,6 +15,8 @@ class BoundBox {
     minX = x - dim;
     maxY = y + dim;
     minY = y - dim;
+    
+    dtime = dt;
 
     int dtmp = int(dim * dt/100);
     MX = maxX + dtmp;
@@ -38,6 +41,10 @@ class BoundBox {
     line(MX, MY, MX, mY);
     line(MX, mY, mX, mY);
     line(mX, mY, mX, MY);
+    
+    noStroke();
+    fill(255, 0, 0);
+    text(str(dtime), mX, MY+10, MY+28, MX);
   }
 
   // draw a blue box
@@ -48,6 +55,10 @@ class BoundBox {
     line(MX, MY, MX, mY);
     line(MX, mY, mX, mY);
     line(mX, mY, mX, MY);
+    
+    noStroke();
+    fill(0, 0, 255);
+    text(str(dtime), mX, MY+10, MY+28, MX);
   }
 }
 

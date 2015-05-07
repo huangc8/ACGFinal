@@ -1,11 +1,12 @@
 PImage img;
+PImage org;
 Point [] points;    // all the points
 Point [] marks;     // all the fixation point
 Point pp;           // pervious fixation point
 BoundBox [] boxes;  // the bounding boxes
 int markIndex = 0;  // current mark index
 int boxIndex = 0;   // current box index
-int markMax = 5;    // maximum mark on screen
+int markMax = 7;    // maximum mark on screen
 int lastMark = -1;  // last added mark
 int dimension = 10; // the size of the box
 
@@ -14,6 +15,8 @@ void setup() {
   img = loadImage("sal_portrait_boy.jpg");
   size(img.width, img.height);
   img.loadPixels();
+  
+  org = loadImage("portrait_boy.jpg");
 
   // create array
   points = new Point[img.width*img.height];
@@ -35,7 +38,7 @@ void setup() {
 }// end of set up
 
 void draw() {
-  image(img, 0, 0);
+  image(org, 0, 0);
   int p = -1;
   // draw cross and links
   for (int i = 0; i < markMax; i++) {
