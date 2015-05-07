@@ -4,7 +4,7 @@ PImage s;
 Gabor a_gabor;
 Sample samp;
 Graph activation;
-String filename = "MB.jpg";
+String filename = "synthetic1.png";
 
 // Helper function that loads greyscale values into image
 void load_pixel(PImage im, ArrayList<FloatList> res) {
@@ -78,3 +78,5 @@ void draw() {
   image(out, img.width, 0);
   image(s, 2*img.width, 0);
 }
+
+
