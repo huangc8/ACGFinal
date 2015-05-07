@@ -133,7 +133,17 @@ class ESphere {
 
     // flipping the rotation because the image is facing away from us relative to the eye
     pushMatrix();
-    translate(width/2, height/2, 0);
+    translate(width/3, height/2, 0);
+    rotateY(radians(5));
+    rotateX(-orientation.x);
+    rotateY(-orientation.y);
+    shape(eye);
+    popMatrix();
+    
+    pushMatrix();
+    translate(width*2/3, height/2, 0);
+    rotateY(radians(-13));
+    rotateX(radians(3));
     rotateX(-orientation.x);
     rotateY(-orientation.y);
     shape(eye);
