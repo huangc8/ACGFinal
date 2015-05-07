@@ -77,18 +77,25 @@ void keyPressed() {
       int index = 0;
 
       while (true) {
-        // chose between top 5
-        float r = random(100);  
-        if (r > 50) {            // 1st
-          index = 0;
-        } else if (r > 25) {     // 2nd
-          index = 1;
-        } else if (r > 12.5) {   // 3rd
-          index = 2;
-        } else if (r > 6.25) {   // 4th
-          index = 3;
-        } else {                 // 5th
-          index = 4;
+        float det = random(100);
+        
+        if (det < 30) {
+          index = floor(random(20, points.length/2));
+        }
+        else {
+          // chose between top 5
+          float r = random(100);  
+          if (r > 50) {            // 1st
+            index = 0;
+          } else if (r > 25) {     // 2nd
+            index = 1;
+          } else if (r > 12.5) {   // 3rd
+            index = 2;
+          } else if (r > 6.25) {   // 4th
+            index = 3;
+          } else {                 // 5th
+            index = 4;
+          }
         }
 
         Point pt = points[index];
