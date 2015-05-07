@@ -14,12 +14,12 @@ class BoundBox {
     minX = x - dim;
     maxY = y + dim;
     minY = y - dim;
-    
+
     int dtmp = int(dim * dt/100);
-    MX = x + dtmp;
-    mX = x - dtmp;
-    MY = y + dtmp;
-    mY = y - dtmp;
+    MX = maxX + dtmp;
+    mX = minX - dtmp;
+    MY = maxY + dtmp;
+    mY = minY - dtmp;
   }
 
   // check if inside box
@@ -34,6 +34,16 @@ class BoundBox {
   public void drawBox() {
     strokeWeight(1);
     stroke(255, 0, 0);
+    line(mX, MY, MX, MY);
+    line(MX, MY, MX, mY);
+    line(MX, mY, mX, mY);
+    line(mX, mY, mX, MY);
+  }
+
+  // draw a blue box
+  public void drawBoxBlue() {
+    strokeWeight(1);
+    stroke(0, 0, 255);
     line(mX, MY, MX, MY);
     line(MX, MY, MX, mY);
     line(MX, mY, mX, mY);
