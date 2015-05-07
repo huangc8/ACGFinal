@@ -13,7 +13,7 @@ int dimension = 10; // the size of the box
 void setup() {
   // load image and pixels
   img = loadImage("sal_portrait_boy.jpg");
-  size(img.width, img.height);
+  size(img.width*2, img.height);
   img.loadPixels();
   
   org = loadImage("portrait_boy.jpg");
@@ -39,6 +39,7 @@ void setup() {
 
 void draw() {
   image(org, 0, 0);
+  image(img, img.width, 0);
   int p = -1;
   // draw cross and links
   for (int i = 0; i < markMax; i++) {
