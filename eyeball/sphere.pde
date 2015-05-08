@@ -25,10 +25,8 @@ class ESphere {
     // if fixated
     if (state == 0) {
       if (fix_frames > 0) {
-        println(frameCount, ": FIXED - ", fix_frames, " frames left");
+//        println(frameCount, ": FIXED - ", fix_frames, " frames left");
         fix_frames -= 1;
-        shape(eye);
-        return;
       }
       // end of fixation
       else {
@@ -36,10 +34,8 @@ class ESphere {
         if (fix_frames < 0 || done < 0) {
           // sequence is finished, at original orientation
           if (abs(orientation.x) < 0.0001 && abs(orientation.y) < 0.0001) {
-            println(frameCount, ": FINISHED!");
+//            println(frameCount, ": FINISHED!");
             state = 0;
-            shape(eye);
-            return;
           }
           // rotate back to origin
           else {
@@ -56,21 +52,23 @@ class ESphere {
             }
             
             orientation.add(dx, dy, 0.0);
-            println(frameCount, ": IN TRANSIT TO ORIGINAL - rotating (", dx, ", ", dy, ")");
+//            println(frameCount, ": IN TRANSIT TO ORIGINAL - rotating (", dx, ", ", dy, ")");
           }
         }
         
-        state = 1;
-        if (done >= 0 && fix_frames >= 0) {
-          PVector next_loc = saccades.get_next_loc();
-          fix_frames = saccades.get_fixation();
-          
-          float rotx = asin((next_loc.x - saccades.org_loc.x)/1600);
-          float roty = asin((next_loc.y - saccades.org_loc.y)/1600);
-          
-          dest_orientation.set(rotx, roty, 0.0);
-          done = saccades.update();
-          println(frameCount, ": SHIFTING - done fixating");
+        else {
+          state = 1;
+          if (done >= 0 && fix_frames >= 0) {
+            PVector next_loc = saccades.get_next_loc();
+            fix_frames = saccades.get_fixation();
+            
+            float rotx = asin((next_loc.x - saccades.org_loc.x)/1600);
+            float roty = asin((next_loc.y - saccades.org_loc.y)/1600);
+            
+            dest_orientation.set(rotx, roty, 0.0);
+            done = saccades.update();
+//            println(frameCount, ": SHIFTING - done fixating");
+          }
         }
       }
     }
@@ -83,23 +81,23 @@ class ESphere {
         
         // finished transit
         if (abs(dx) < 0.001 && abs(dy) < 0.001) {
-          println(frameCount, ": END OF FIXATION - going to next");
+//          println(frameCount, ": END OF FIXATION - going to next");
           state = 0;
-          shape(eye);
-          return;
         }
         
-        // if orientation left is more than what could go in one frame
-        if (pow(pow(dx, 2.0)+pow(dy, 2.0), 0.5) > unit_speed) {
-            PVector r = new PVector(dx, dy);
-            r.normalize();
-            r.mult(unit_speed);
-            dx = r.x;
-            dy = r.y;
+        else {
+          // if orientation left is more than what could go in one frame
+          if (pow(pow(dx, 2.0)+pow(dy, 2.0), 0.5) > unit_speed) {
+              PVector r = new PVector(dx, dy);
+              r.normalize();
+              r.mult(unit_speed);
+              dx = r.x;
+              dy = r.y;
+          }
+          
+          orientation.add(dx, dy, 0.0);
+//          println(frameCount, ": IN TRANSIT - rotating (", dx, ", ", dy, ")");
         }
-        
-        orientation.add(dx, dy, 0.0);
-        println(frameCount, ": IN TRANSIT - rotating (", dx, ", ", dy, ")");
       }
       
       else {
@@ -107,8 +105,6 @@ class ESphere {
         if (abs(orientation.x) < 0.0001 && abs(orientation.y) < 0.0001) {
           println(frameCount, ": FINISHED!");
           state = 0;
-          shape(eye);
-          return;
         }
         // rotate back to origin
         else {
@@ -125,7 +121,7 @@ class ESphere {
           }
           
           orientation.add(dx, dy, 0.0);
-          println(frameCount, ": IN TRANSIT TO ORIGINAL - rotating (", dx, ", ", dy, ")");
+//          println(frameCount, ": IN TRANSIT TO ORIGINAL - rotating (", dx, ", ", dy, ")");
         }
       }
     }
@@ -133,7 +129,7 @@ class ESphere {
 
     // flipping the rotation because the image is facing away from us relative to the eye
     pushMatrix();
-    translate(width/3, height/2, 0);
+    translate(width/3 - 5, height/2, 0);
     rotateY(radians(5));
     rotateX(-orientation.x);
     rotateY(-orientation.y);
@@ -141,7 +137,7 @@ class ESphere {
     popMatrix();
     
     pushMatrix();
-    translate(width*2/3, height/2, 0);
+    translate(width*2/3 + 5, height/2, 0);
     rotateY(radians(-13));
     rotateX(radians(3));
     rotateX(-orientation.x);

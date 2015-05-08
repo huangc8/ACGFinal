@@ -14,7 +14,7 @@ class Sample {
     w = wi;
     h = he;
     cut = c + 1;
-    sample_size = 3;
+    sample_size = 9;
   }
   
   public void get_size() {

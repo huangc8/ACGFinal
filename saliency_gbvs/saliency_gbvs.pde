@@ -4,7 +4,7 @@ PImage s;
 Gabor a_gabor;
 Sample samp;
 Graph activation;
-String filename = "synthetic1.png";
+String filename = "taxi.jpg";
 
 // Helper function that loads greyscale values into image
 void load_pixel(PImage im, ArrayList<FloatList> res) {
@@ -70,6 +70,7 @@ void setup() {
   s.save("sal_org_" + filename);
   s.resize(img.width, img.height);
   s.save("sal_" + filename);
+  println("done!");
 }
 
 void draw() {

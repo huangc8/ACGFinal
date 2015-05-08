@@ -1,4 +1,5 @@
 PImage eye_tex;
+PImage back;
 PShape eye;
 ESphere eyeball;
 SaccData fixations;
@@ -17,6 +18,8 @@ void setup() {
   ArrayList<PVector> norms = new ArrayList<PVector>();
   HashMap<PVector, PVector> vertToTex = new HashMap<PVector, PVector>();
   eye_tex = loadImage("eyeball_texture.png");
+  back = loadImage("face.png");
+  back.resize(512, 512);
 
   for (int i=0; i<allTex.length; i++) {
     String[] aTex = trim(split(allTex[i], ' '));
@@ -85,7 +88,19 @@ void setup() {
 }
 
 void draw() {
-  lights();
+  background(back);
+  pushMatrix();
+  translate(width / 2, height / 2);
+  beginShape();
+  texture(back);
+  vertex(-256, -256, 15, 0,   0);
+  vertex( 256, -256, 15, 512, 0);
+  vertex( 256,  256, 15, 512, 512);
+  vertex(-256,  256, 15, 0,   512);
+  endShape();
+  popMatrix();
+
+//  lights();
   eyeball.display();
 }
 

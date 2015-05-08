@@ -8,23 +8,19 @@ int markIndex = 0;  // current mark index
 int boxIndex = 0;   // current box index
 int markMax = 7;    // maximum mark on screen
 int lastMark = -1;  // last added mark
-int dimension = 10; // the size of the box
-PrintWriter output; // output to text
+int dimension = 5; // the size of the box
+
+float accumulator = 0.0;
+boolean saved = false;
 
 void setup() {
-
-  // create file output
-  output = createWriter("data.txt");
-
+  background(255);
   // load image and pixels
-  img = loadImage("sal_portrait_boy.jpg");
+  img = loadImage("sal_taxi.jpg");
   size(img.width*2, img.height);
   img.loadPixels();
-  org = loadImage("portrait_boy.jpg");
-
-  // output size
-  output.println(img.width + " " + img.height);
-  output.flush();
+  
+  org = loadImage("taxi.jpg");
 
   // create array
   points = new Point[img.width*img.height];
@@ -50,31 +46,37 @@ void draw() {
   image(img, img.width, 0);
   int p = -1;
   // draw cross and links
-  for (int i = 0; i < markMax; i++) {
-    if (marks[i] != null) {
-      drawCross(marks[i].x, marks[i].y);
-      if (p >= 0) {
-        if (i == lastMark) {
-          drawLineBlue(marks[i].x, marks[i].y, marks[p].x, marks[p].y);
-        } else {
-          drawLine(marks[i].x, marks[i].y, marks[p].x, marks[p].y);
+//  if (accumulator <= 3000) {
+    for (int i = 0; i < markMax; i++) {
+      if (marks[i] != null) {
+        drawCross(marks[i].x, marks[i].y);
+        if (p >= 0) {
+          if (i == lastMark) {
+             drawLineBlue(marks[i].x, marks[i].y, marks[p].x, marks[p].y);
+          } else {
+             drawLine(marks[i].x, marks[i].y, marks[p].x, marks[p].y);
+          }
         }
+        p = i;
       }
-      p = i;
     }
-  }
-
-  // draw the box
-  for (int i = 0; i < markMax; i++) {
-    if (boxes[i] != null) {
-      boxes[i].drawBox();
+  
+    // draw the box
+    for (int i = 0; i < markMax; i++) {
+      if (boxes[i] != null) {
+        boxes[i].drawBox();
+      }
     }
-  }
-
-  if (lastMark >= 0) {
-    boxes[lastMark].drawBoxBlue();
-    drawCrossBlue(marks[lastMark].x, marks[lastMark].y);
-  }
+  
+    if (lastMark >= 0) {
+      boxes[lastMark].drawBoxBlue();
+      drawCrossBlue(marks[lastMark].x, marks[lastMark].y);
+    }
+//  }
+//  else if (!saved) {
+//    saveFrame("###.png");
+//    saved = true;
+//  }
 }
 
 // find next fixation point
@@ -86,10 +88,11 @@ void keyPressed() {
 
       while (true) {
         float det = random(100);
-
-        if (det < 30) {
-          index = floor(random(20, points.length/2));
-        } else {
+        
+        if (det < 20) {
+          index = floor(random(6, points.length/3));
+        }
+        else {
           // chose between top 5
           float r = random(100);  
           if (r > 50) {            // 1st
@@ -144,6 +147,8 @@ void keyPressed() {
         durationTime =+ random(100);
       }
       pp = points[index].clone();
+      accumulator += durationTime;
+      println(accumulator);
 
       // mark the point
       markPoint(points[index], durationTime);
@@ -171,10 +176,6 @@ void markPoint(Point p, float dt) {
   }
   boxes[boxIndex] = new BoundBox(p.x, p.y, dimension, dt);
   boxIndex++;
-  
-  // output to data file
-  output.println(dt + " " + p.x + " " + p.y);
-  output.flush();
 }
 
 // add a point to points
@@ -184,7 +185,8 @@ void addPoint(int x, int y, int index) {
 }
 
 // partition for quick sort
-int partition(int left, int right) {
+int partition(int left, int right)
+{
   int i = left, j = right;
   Point tmp;
   Point pivot = points[(left + right) / 2];
@@ -255,10 +257,5 @@ void drawLineBlue(int x, int y, int x2, int y2) {
   strokeWeight(1);
   stroke(0, 0, 255);
   line(x, y, x2, y2);
-}
-
-// close output file when close
-void stop() {
-  output.close();
 }
 
