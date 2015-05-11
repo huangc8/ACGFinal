@@ -24,6 +24,8 @@ Final Project for Advanced Computer Graphics by Chi-Ning Huang and Xitu Chen
 
 - /image_pool: sample pictures we used and generated.
 
+- /misc_pics: miscellaneous images including gifs, bloopers, and equations used.
+
 - /Saccadic_Scanpath: saccadic scanpath generation program
 
 - /saliency_gbvs: saliency images generation program; please refer to
