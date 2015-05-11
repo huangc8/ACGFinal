@@ -15,7 +15,7 @@ class ESphere {
     num_verts = 382; 
     orientation = new PVector(0.0, 0.0, 0.0);
     dest_orientation = new PVector(0.0, 0.0, 0.0);
-    unit_speed = radians(15.0);
+    unit_speed = radians(3.0);
     saccades = s;
   }
   
